@@ -1,0 +1,138 @@
+def message(request,pk,classType,fromType):
+    replyClicked =False
+    user_id = request.session['user_id']
+    messageObjects = []
+    if user_id > 1300000 and user_id < 2000000:
+        senderRole = "Student"
+        sender = Student.objects.get(student_id=user_id)
+    else:
+        senderRole = "Teacher"
+        sender = Teacher.objects.get(teacher_id=user_id)
+    if classType == 'MessageST':
+        message = MessageST.objects.get(pk=pk)
+        if senderRole == "Student":
+            replyMessage = MessageST()
+            receiverRole = "Teacher"
+        else:
+            replyMessage = MessageTS()
+            receiverRole = "Student"
+        while message.replyMessageST != None:
+            message = message.replyMessageST
+            replyMessage.parentMessageST = message
+        while message.replyMessageTS != None:
+            message = message.replyMessageTS
+            replyMessage.parentMessageTS = message
+        temp = message
+        while temp != None:
+            messageObjects.append(temp)
+            if temp.parentMessageST != None:
+                temp = temp.parentMessageST
+            elif temp.parentMessageTS != None:
+                temp = temp.parentMessageTS
+            else:
+                temp = None
+    elif classType == 'MessageTS':
+        message = MessageTS.objects.get(pk=pk)
+        if senderRole == "Student":
+            replyMessage = MessageST()
+            receiverRole = "Teacher"
+        else:
+            replyMessage = MessageTS()
+            receiverRole = "Teacher"
+        while message.replyMessageST != None:
+            message = message.replyMessageST
+            replyMessage.parentMessageST = message
+        while message.replyMessageTS != None:
+            message = message.replyMessageTS
+            replyMessage.parentMessageTS = message
+        temp = message
+        while temp != None:
+            messageObjects.append(temp)
+            if temp.parentMessageST != None:
+                temp = temp.parentMessageST
+            elif temp.parentMessageTS != None:
+                temp = temp.parentMessageTS
+            else:
+                temp = None
+    elif classType == 'MessageSS':
+        message = MessageSS.objects.get(pk=pk)
+        replyMessage = MessageSS()
+        receiverRole = "Student"
+        while message.replyMessage != None:
+            message = message.replyMessage
+        replyMessage.parentMessage = message
+        temp = message
+        while temp != None:
+            messageObjects.append(temp)
+            temp = temp.parenMessage
+    elif classType == 'MessageTT':
+        message = MessageTT.objects.get(pk=pk)
+        replyMessage = MessageTT()
+        receiverRole = "Teacher"
+        while message.replyMessage != None:
+            message = message.replyMessage
+        replyMessage.parentMessage = message
+        temp = message
+        while temp != None:
+            messageObjects.append(temp)
+            temp = temp.parenMessage
+
+    if message.sender == sender:
+        receiver = message.receiver
+    else:
+        receiver = message.sender
+
+    messageObjects.sort(key=lambda x: x.pub_date)
+
+    if request.method == 'POST':
+        if request.POST.get("reply"):
+            replyClicked = True
+            form = ReplyForm()
+            if senderRole == "Student":
+                template_name = "messaging/message.html"
+                context = {'messageObjects': messageObjects, 'student_id': sender.student_id, 'user_name': sender.user_name,
+                           'profile_pic_url': sender.profile_pic.url, 'replyClicked': replyClicked, 'role': senderRole,
+                           'pk': pk, 'classType': classType, 'form':form, 'receiver':receiver}
+                return render(request, template_name, context)
+            else:
+                template_name = "messaging/message.html"
+                context = {'message':message, 'teacher_id':sender.teacher_id, 'user_name': sender.user_name, 'profile_pic_url':sender.profile_pic.url, 'replyClicked': replyClicked, 'role': senderRole, 'pk': pk, 'classType': classType, 'form':form, 'receiver':receiver}
+                return render(request, template_name, context)
+        else:
+            form = ReplyForm(request.POST)
+            if form.is_valid():
+                newMessage = form.cleaned_data['message']
+
+            replyMessage.message = newMessage
+            replyMessage.sender = sender
+            replyMessage.receiver = receiver
+            replyMessage.pub_date = timezone.now()
+            messageType = message.__class__.__name__
+            if messageType == "MessageST":
+                replyMessage.parentMessageST = message
+            elif messageType == "MessageTS":
+                replyMessage.parentMessageTS = message
+            else:
+                replyMessage.parentMessage = message
+            replyMessage.save()
+
+            messageType = replyMessage.__class__.__name__
+            if messageType == "MessageST":
+                message.replyMessageST = replyMessage
+            elif messageType == "MessageTS":
+                message.replyMessageTS = replyMessage
+            else:
+                message.replyMessage = replyMessage
+            message.save()
+
+            return HttpResponseRedirect(reverse('messaging:message',args=(pk,classType,fromType,)))
+    else:
+        replyClicked = False
+        if senderRole == "Student":
+            template_name = "messaging/message.html"
+            context = {'messageObjects':messageObjects, 'student_id':sender.student_id, 'user_name':sender.user_name, 'profile_pic_url':sender.profile_pic.url, 'replyClicked': replyClicked, 'role': senderRole, 'pk': pk, 'classType': classType}
+            return render(request,template_name,context)
+        else:
+            template_name = "messaging/message.html"
+            context = {'messageObjects':messageObjects, 'teacher_id':sender.teacher_id, 'user_name':sender.user_name, 'profile_pic_url':sender.profile_pic.url, 'replyClicked': replyClicked, 'role': senderRole, 'pk': pk, 'classType': classType}
+            return render(request,template_name,context)

@@ -1,0 +1,35 @@
+class Quiz(models.Model):
+    name = models.CharField(max_length=200)
+    teacher = models.ForeignKey('signUp.Teacher', on_delete=models.CASCADE)
+    pub_date = models.DateTimeField('date published')
+    course = models.ForeignKey('signUp.Course', on_delete=models.CASCADE)
+    last_date = models.DateTimeField('last date')
+
+
+class Question(models.Model):
+    question = models.CharField(max_length=200)
+    quiz = models.ForeignKey(Quiz,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "Question: "+self.question
+
+
+class Choice(models.Model):
+    choice = models.CharField(max_length=200)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    isAnswer = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.isAnswer == False:
+            return "Choice: " + self.choice
+        else:
+            return "Answer: " + self.choice
+
+
+class Marks(models.Model):
+    mark = models.IntegerField(default=0)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    student = models.ForeignKey('signUp.Student', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "Marks: " + str(self.mark)

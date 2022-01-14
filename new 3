@@ -1,0 +1,12 @@
+ {% if discussion is False %}
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <button class="btn btn-success" name="discussion" type="submit" value="discussion">Start a discussion</button>
+                                </form>
+                            {% else %}
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    {{ form|crispy }}
+                                    <button class="btn btn-success" type="submit">Submit</button>
+                                </form>
+                            {% endif %}

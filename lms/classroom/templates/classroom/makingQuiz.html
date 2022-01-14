@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+{% load crispy_forms_tags %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>profile</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/typicons/2.0.9/typicons.min.css">
+    <link rel="stylesheet" href="{% static 'classroom/course.css' %}">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark navbar-expand-md fixed-top bg-dark">
+        <div class="container">
+            <a href="#" class="navbar-brand" id="lms">Learning Managemet System</a>
+            <button data-toggle="collapse" data-target="#navcol-1" class="navbar-toggler">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-flex flex-row justify-content-end" id="navcol-1">
+                <ul class="nav navbar-nav">
+                    <li role="presentation" class="nav-item"><a href="{% url 'classroom:home' %}" class="btn btn-success nav-link mr-3" id="button2">Home</a></li>
+                    <li role="presentation" class="nav-item"><a href="{% url 'signUp:logging_out' %}" class="btn btn-success nav-link mr-3" id="button1">Log out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% if isForm %}
+    <section class="cover" style="height:auto;background-position:100% 100%;background-repeat:no-repeat;background-size:cover;background-color:#c3d7e1;">
+        {% else %}
+        <section class="cover" style="height:200vh;background-position:100% 100%;background-repeat:no-repeat;background-size:cover;background-color:#c3d7e1;">
+            {% endif %}
+        <div class="row" style="margin-top:55px;">
+            <div class="col col-10" style="margin-left:80px;">
+                <div class="card" style="margin-top:50px;height:auto;width:80%;margin-left:200px;">
+                    <div class="card-body">
+                        <h4 class="card-title">Setting Up a quiz</h4>
+                        {% if isForm %}
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <div class="quiz-detail" style="margin-top: 30px;">
+                                <h6>Quiz detail</h6>
+                                {{ form|crispy }}
+                                <div class="form-border" style="margin-top: 30px;border-bottom: 2px solid grey;"></div>
+                            </div>
+                            {{ formset.management_form }}
+                            {% for form in formset %}
+                            <div clas="quesiton-no" style="margin-top: 40px;">
+                                <h6>Question No {{forloop.counter}}</h6>
+                                {{ form|crispy }}
+                            </div>
+                            {% if formset|length != forloop.counter %}
+                            <div class="form-border" style="margin-top: 30px;border-bottom: 2px solid grey;"></div>
+                            {% endif %}
+                            {% endfor %}
+                            <li class="list-group-item quiz-btn">
+                                <button class="btn btn-success quiz-btn" name="quiz" type="submit">Submit</button>
+                            </li>
+                        </form>
+                        {% else %}
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <li class="list-group-item question" >
+                                <span>How many questions do you want in quiz?</span>
+                            </li>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" name="quiz_number" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                            </div>
+                            <button class="btn btn-success submit-btn" name="submit1" type="submit">Submit</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

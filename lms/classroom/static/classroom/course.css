@@ -1,0 +1,60 @@
+#button1,#button2,#button3{text-align:center;padding-left:30px;padding-right:30px}#lms{margin-left:-150px}i{margin-right:10px}.course-list{margin-left:-40px}#button1,#button2,#button3{padding-left:50px;padding-right:50px}.nav.navbar-nav{margin-left:100px}#navcol-1{margin-left:10px}#nav-brand{margin-left:-150px}.heading{margin-top:60px}a{color:#6492ed}.events{padding-left: 0px;list-style-type:square; margin-left:20px; font-size: 20px;}.exams{padding-left: 0px;list-style-type:square; margin-left:20px; font-size: 20px;}.home>li{margin-left:-40px; list-style: none; font-size: 20px;}.card{margin-top: 25px;box-shadow:0 4px 8px 0 rgba(0,0,0,.2);transition:1.3s;border-radius:10px}
+.nav.navbar-nav
+{
+    margin-right: -150px;
+}
+.list-group-item
+{
+    border: none;
+    border-bottom: 2px solid #ddd;
+    color: #6492ed;
+    font-size: 20px;
+    list-style: none;
+}
+.list-group-item.week
+{
+    color: black;
+}
+h1
+{
+    padding: .75rem 1.25rem;
+}
+.course-input
+{
+    position:absolute;
+    right: 100px;
+    margin-top: 10px;
+}
+.inner-list-item
+{
+    list-style: disc;
+}
+a.discussion
+{
+    color: black;
+}
+a.discussion:hover
+{
+    text-decoration: none;
+    color: #006aff;
+}
+.exams
+{
+    list-style: square;
+}
+.list-group-item.question
+{
+    list-style: none;
+    color: black;
+    margin-left: 0px;
+    border: none;
+    padding-left: 0px;
+}
+.list-group-item.quiz-btn
+{
+    list-style: none;
+    color: black;
+    margin-left: 0px;
+    padding-left: 0px;
+    border: none;
+}

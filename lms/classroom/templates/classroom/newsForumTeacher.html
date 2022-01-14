@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+{% load crispy_forms_tags %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>profile</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/typicons/2.0.9/typicons.min.css">
+    <link rel="stylesheet" href="{% static 'classroom/myCourse.css' %}">
+</head>
+
+<body style="background-color:rgb(214,221,228);"><nav class="navbar navbar-dark navbar-expand-md fixed-top bg-dark">
+    <div class="container"><a href="#" class="navbar-brand" id="lms">Learning Managemet System</a><button data-toggle="collapse" data-target="#navcol-1" class="navbar-toggler"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse d-flex flex-row justify-content-end"
+            id="navcol-1">
+            <ul class="nav navbar-nav">
+                <li role="presentation" class="nav-item"><a href="{% url 'classroom:home' %}" class="btn btn-success nav-link mr-3" id="button2">Home</a></li>
+                <li role="presentation" class="nav-item"><a href="{% url 'signUp:logging_out' %}" class="btn btn-success nav-link mr-3" id="button1">Log out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="alerts">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert">
+                <center style="margin-top: 70px;">{{ message }}</center>
+            </div>
+        {% endfor %}
+     {% endif %}
+</div>
+    <h1 class="heading">Learning Management System</h1>
+    <div class="row main-row">
+        <div class="col">
+            <div class="home">
+                <div class="card home">
+                    <div class="card-body">
+                        <ul class="home">
+                            <li><i class="fa fa-home"></i><a href="{% url 'classroom:home' %}">Home</a></li>
+<!--                            <li><i class="typcn typcn-home-outline"></i><a href="#">My Home</a></li>-->
+                            <li><i class="fa fa-user"></i><a href="{% url 'signUp:profileTeacher' teacher.teacher_id %}">&nbspMy Profile</a></li>
+                            <li><i class="fa fa-book"></i><a href="{% url 'classroom:myCoursesTeacher' teacher.teacher_id %}">My Courses</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-9">
+            <div class="course">
+                <div class="card profile-info-card" style="height:800px;">
+                    <div class="card-body">
+                        <h1>My Courses</h1>
+                        <ul class="list-group" style="margin-left: 20px;">
+                            {% if isClicked is False %}
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <button class="btn btn-success start-btn" name="start" type="submit" value="start">Start a discussion</button>
+                                </form>
+                            {% else %}
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    {{ form|crispy }}
+                                    <button class="btn btn-success send-btn" name="send" type="submit">Send</button>
+                                </form>
+                            {% endif %}
+                            {% for discussion in firstDiscussions %}
+                                <a class="discussion" href="{% url 'classroom:discussion' course.pk discussion.discussionId.discussionId %}">
+                                    <div class="card profile-info-card message-card" id="card{{forloop.counter}}">
+                                         <div class="card-body">
+                                            <h4 class="card-title" style="border: none;">{{ discussion.teacher.user_name }}</h4>
+                                            <p class="card-text" style="border: none;">{{ discussion.discussion|truncatechars:100 }}</p>
+                                            <p style="border: none;">Sent on {{ discussion.pub_date }}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!--        <div class="col">-->
+<!--            <div class="evnets">-->
+<!--                <div class="card">-->
+<!--                    <div class="card-body">-->
+<!--                        <h4 class="card-title">Events</h4>-->
+<!--                        <ul class="events">-->
+<!--                            <li><a href="#">Quiz</a></li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
